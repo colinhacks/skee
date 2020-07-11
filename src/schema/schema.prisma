@@ -1,0 +1,51 @@
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://prisma:^c0xcS$Im19L@35.193.96.165/dpcpilot"
+}
+
+// Post  Post[] @relation("PostPrimaryTags")
+// primaryPosts Post[] @relation("PostPrimaryTags")
+// Post  Post[] @relation("PostPrimaryTags")
+// primaryPostId String
+// special String
+// primaryTag   Tag     @relation("PostPrimaryTags", fields: [primaryTagId], references: [id])
+model Tag {
+  id          String @default(uuid()) @id
+  name        String @unique
+  posts       Post[] @relation("PostTags", references: [id])
+  Post        Post[] @relation("PostPrimaryTags")
+  SpecialPost Post[] @relation("SpecialPrimaryTags")
+}
+
+model Post {
+  id           String  @default(uuid()) @id
+  content      String
+  published    Boolean
+  author       User?   @relation("UserPost", fields: [authorId], references: [id])
+  authorId     String?
+  int          Int?
+  tags         Tag[]   @relation("PostTags", references: [id])
+  primaryTagId String
+  primaryTag   Tag     @relation("PostPrimaryTags", fields: [primaryTagId], references: [id])
+  specialTagId String
+  specialTag   Tag     @relation("SpecialPrimaryTags", fields: [specialTagId], references: [id])
+}
+
+model User {
+  id            String   @default(uuid()) @id
+  email         String[] @unique
+  firstName     String
+  middleName    String   @unique
+  lastName      String   @unique
+  age           Float    @unique
+  averageRating Float
+  boss          User?    @relation("UserBoss", fields: [bossId], references: [id])
+  bossId        String?
+  employees     User[]   @relation("UserBoss")
+  posts         Post[]   @relation("UserPost")
+  born          DateTime
+}
+
+generator client {
+  provider = "prisma-client-js"
+}

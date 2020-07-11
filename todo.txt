@@ -1,0 +1,16 @@
+[ ] alterColumn (various)
+[ ] setColumnDefault
+[ ] dropColumnDefault
+[ ] renameColumn
+[ ] renameTable
+[ ] dropColumn
+[ ] dropTable
+[ ] setNotNull
+[ ] dropNotNull
+[ ] setUnique
+[ ] dropUnique
+[ ] updatedAt
+[ ] updatedAt
+[ ] add constraints to relational schema (unique, foreign key, primary key)
+[ ] add indexes to relational schema
+[ ] write tests
