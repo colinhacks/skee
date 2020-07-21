@@ -1,6 +1,6 @@
 {
   "name": "skee",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Fluent schema modeling and migrations, versioning, and codegen",
   "main": "./lib/src/index.js",
   "types": "./lib/src/index.d.ts",
