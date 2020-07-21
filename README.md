@@ -1,12 +1,11 @@
 <div align="center">
-  <h1 align="center">Esme</h1>
+  <img src="./logo/nostroke_3.png" height="200px" />
+  <h1 align="center">Skee</h1>
 </div>
 
-<p align="center">
-    if you're happy and you know it, leave a star
-    <br>
-    created by <a href="https://twitter.com/vriad" target="_blank">@vriad</a>
-  </p>
+<p align="center">  
+  🌟 if you're happy and you know it, leave a star 🌟
+</p>
 
 <!-- ### Table of contents -->
 

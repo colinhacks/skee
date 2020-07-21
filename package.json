@@ -9,15 +9,15 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/vriad/esme"
+    "url": "https://github.com/vriad/skee"
   },
   "author": "Colin McDonnell <colin@vriad.com>",
   "license": "MIT",
   "sideEffects": false,
   "bugs": {
-    "url": "https://github.com/vriad/esme/issues"
+    "url": "https://github.com/vriad/skee/issues"
   },
-  "homepage": "https://github.com/vriad/esme",
+  "homepage": "https://github.com/vriad/skee",
   "dependencies": {
     "@prisma/client": "^2.0.0-beta.4",
     "ts-toolbelt": "^6.6.2"

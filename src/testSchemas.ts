@@ -1,6 +1,6 @@
 import { bus } from './bus';
 
-export const blogSchema = bus.Esme.create()
+export const blogSchema = bus.Skee.create()
   .addTable('User')
   .commit('1.0.0')
   .addTable('Post')

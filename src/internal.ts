@@ -22,5 +22,5 @@ export { Migrator };
 import { PostgresMigrator } from './migrate/PostgresMigrator';
 export { PostgresMigrator };
 
-import { Esme } from './Esme';
-export { Esme };
+import { Skee } from './Skee';
+export { Skee };

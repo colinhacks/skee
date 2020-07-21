@@ -1,3 +1,3 @@
-import * as esme from './external';
+import * as Skee from './external';
 
-export { esme };
+export { Skee };
