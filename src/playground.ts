@@ -9,14 +9,10 @@ const testDB = {
   url: 'postgresql://colinmcd94@localhost:5432/virgil_test',
 };
 
-const pg = new bus.PostgresMigrator(testDB);
+// const pg = new bus.PostgresMigrator(testDB);
 
 const run = async () => {
-  for (const table of blogSchema.to.relationalSchema().tables) {
-    await pg.execute(`DROP TABLE IF EXISTS "${table.name}" CASCADE;`);
-  }
-  await pg.execute(`DROP TABLE IF EXISTS "__commit_history__" CASCADE;`);
-
+  await blogSchema.deleteAllTables(testDB);
   await blogSchema.sync(testDB);
 
   // await pgTest.dropTable('__commit_history__');

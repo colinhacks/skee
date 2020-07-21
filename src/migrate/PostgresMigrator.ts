@@ -364,4 +364,19 @@ export class PostgresMigrator extends Migrator {
 
     return true;
   };
+
+  deleteAllTables = async (schema: bus.Schema) => {
+    try {
+      const relationalSchema = bus.utils.schemaToRelational(schema);
+      for (const table of relationalSchema.tables) {
+        await this.execute(`DROP TABLE IF EXISTS "${table.name}" CASCADE;`);
+      }
+      await this.execute(`DROP TABLE IF EXISTS "__commit_history__" CASCADE;`);
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+
+    return true;
+  };
 }

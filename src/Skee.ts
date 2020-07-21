@@ -460,4 +460,15 @@ export class Skee<T extends string, V extends CommitCache> {
 
     return;
   };
+
+  deleteAllTables = async (db: bus.DB) => {
+    let migrator: bus.Migrator;
+    if (db.db === 'postgres') {
+      migrator = new bus.PostgresMigrator(db);
+    } else {
+      throw new Error(`Unsupported database: "${db.db}". Only 'postgres' is currently supported.`);
+    }
+    await migrator.deleteAllTables(this._schema);
+    return;
+  };
 }

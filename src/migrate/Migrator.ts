@@ -20,6 +20,7 @@ export abstract class Migrator {
   abstract manyToMany: (action: bus.ducks.manyToMany.Action, schema: bus.Schema) => Promise<boolean>;
   abstract commit: (action: bus.ducks.commit.Action) => Promise<boolean>;
   abstract initialize: () => Promise<boolean>;
+  abstract deleteAllTables: (schema: bus.Schema) => Promise<boolean>;
   abstract toDefault: (defaultValue: any) => string;
   abstract toLiteral: (defaultValue: any) => string;
   abstract toId: (defaultValue: any) => string;
