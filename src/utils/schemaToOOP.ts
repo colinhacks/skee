@@ -39,7 +39,7 @@ export const schemaToOOP = (schema: bus.Schema): bus.OOPSchema => {
     const endEdges = schema.edges.filter((e) => e.end === t.name);
 
     for (const se of startEdges) {
-      const isList = se.kind.includes('manyTo');
+      const isList = se.kind.includes('ToMany');
       relationFields.push({
         key: se.startKey,
         edgeName: se.name,

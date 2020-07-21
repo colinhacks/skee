@@ -1,19 +1,18 @@
 <div align="center">
   <h1 align="center">Esme</h1>
-  <p align="center">
+</div>
+
+<p align="center">
     if you're happy and you know it, leave a star
-  </p>
-  <p align="center">
+    <br>
     created by <a href="https://twitter.com/vriad" target="_blank">@vriad</a>
   </p>
-</div>
 
 <!-- ### Table of contents -->
 
 # Motivation
 
 Extraordinary schema migration experience
-
 
 ```ts
 abstract addTable: (action: bus.ducks.addTable.Action) => Promise<boolean>;

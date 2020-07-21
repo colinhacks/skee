@@ -25,8 +25,12 @@ const run = async () => {
   // const value = await pgTest.execute(`select * from "User";`);
   // console.log(JSON.stringify(value.rows, null, 2));
 
-  // const prisma = blogSchema.to.prisma();
-  // console.log(prisma.file);
+  // const test = blogSchema.to.oopSchema();
+  // console.log(JSON.stringify(test, null, 2));
+  // console.log('\nDONE.');
+
+  // const test = blogSchema.to.zod();
+  // console.log(test.file);
   // console.log('\nDONE.');
 
   // console.log(JSON.stringify(blogSchema._schema, null, 2));

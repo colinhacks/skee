@@ -26,6 +26,7 @@ export class Esme<T extends string, V extends CommitCache> {
     relationalSchema: () => bus.utils.schemaToRelational(this._schema),
     oopSchema: () => bus.utils.schemaToOOP(this._schema),
     skiiStructs: (): ReturnType<typeof bus.mapping.toSkiiSchema> => bus.mapping.toSkiiSchema(this._schema),
+    zod: (): ReturnType<typeof bus.mapping.toZodSchema> => bus.mapping.toZodSchema(this._schema),
     typescript: () => bus.mapping.toTypeScript(this._schema),
     prisma: () => bus.mapping.toPrisma(this._schema)(),
   };
@@ -94,6 +95,7 @@ export class Esme<T extends string, V extends CommitCache> {
     //   ...this._schema,
     //   tables: modTables,
     // });
+
     return new Esme([
       ...this._actions,
       {

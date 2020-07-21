@@ -1,7 +1,7 @@
 {
   "name": "skee",
   "version": "0.3.5",
-  "description": "Fluent schema modeling with migrations, versioning, and codegen",
+  "description": "Fluent schema modeling and migrations, versioning, and codegen",
   "main": "./lib/src/index.js",
   "types": "./lib/src/index.d.ts",
   "files": [
@@ -38,7 +38,13 @@
     "lint": "tslint -p tsconfig.json",
     "test": "jest --config jestconfig.json --coverage",
     "prepublishOnly": "npm run build",
-    "play": "nodemon -e ts -w . -x ts-node src/playground.ts"
+    "play": "nodemon -e ts -w . -x ts-node src/playground.ts",
+    "check": "gts check",
+    "compile": "tsc",
+    "fix": "gts fix",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile",
+    "posttest": "npm run check"
   },
   "devDependencies": {
     "@prisma/cli": "^2.0.0-beta.4",
@@ -46,13 +52,14 @@
     "@types/pg": "^7.14.3",
     "@typescript-eslint/eslint-plugin": "^2.26.0",
     "@typescript-eslint/parser": "^2.26.0",
-    "eslint": "^6.8.0",
+    "eslint": "^7.5.0",
     "jest": "^25.1.0",
     "nodemon": "^2.0.2",
     "pg": "^8.2.1",
     "prettier": "2",
     "ts-jest": "^25.2.1",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "@types/node": "^13.11.1"
   },
   "peerDependencies": {
     "pg": "^7"
