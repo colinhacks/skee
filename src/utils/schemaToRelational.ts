@@ -34,6 +34,7 @@ export const schemaToRelational = (schema: bus.Schema): bus.RelationalSchema => 
       default: null,
       primary: true,
     });
+
     // adding createdAt
     modColumns.push({
       name: 'createdAt',
@@ -44,16 +45,17 @@ export const schemaToRelational = (schema: bus.Schema): bus.RelationalSchema => 
       default: bus.FUNCTION.now,
       primary: false,
     });
+
     // adding updatedAt
-    modColumns.push({
-      name: 'updatedAt',
-      type: bus.COLUMN.updatedAt,
-      isList: false,
-      unique: false,
-      notNull: true,
-      default: null,
-      primary: false,
-    });
+    // modColumns.push({
+    //   name: 'updatedAt',
+    //   type: bus.COLUMN.updatedAt,
+    //   isList: false,
+    //   unique: false,
+    //   notNull: true,
+    //   default: null,
+    //   primary: false,
+    // });
 
     tableStore[table.name] = {
       ...table,
