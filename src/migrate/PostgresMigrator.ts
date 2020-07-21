@@ -59,10 +59,10 @@ export const colToPG = (col: bus.COLUMN) => {
 };
 
 export class PostgresMigrator extends Migrator {
-  _db: bus.DB;
+  _db: bus.DBCxn;
   _client?: Client;
 
-  constructor(db: bus.DB) {
+  constructor(db: bus.DBCxn) {
     super();
     this._db = db;
   }

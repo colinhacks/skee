@@ -301,7 +301,7 @@ export class Skee<T extends string, V extends CommitCache> {
     return new Skee(actions) as any;
   };
 
-  sync = async (db: bus.DB, params: { break?: keyof V } = {}) => {
+  sync = async (db: bus.DBCxn, params: { break?: keyof V } = {}) => {
     if (params.break) {
       if (!this._schema.commits.find((c) => c.name === params.break)) {
         throw new Error(`You specified a breakpoint of "${params.break}" but that commit doesn't exist.`);
@@ -461,7 +461,7 @@ export class Skee<T extends string, V extends CommitCache> {
     return;
   };
 
-  deleteAllTables = async (db: bus.DB) => {
+  deleteAllTables = async (db: bus.DBCxn) => {
     let migrator: bus.Migrator;
     if (db.db === 'postgres') {
       migrator = new bus.PostgresMigrator(db);

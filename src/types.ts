@@ -125,7 +125,7 @@ export type OOPModel = {
 };
 export type OOPSchema = { models: OOPModel[] };
 
-export type DB = {
+export type DBCxn = {
   db: string;
   url: string;
 };
