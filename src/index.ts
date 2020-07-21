@@ -1,3 +1,3 @@
-import * as Skee from './external';
-
-export { Skee };
+import * as skee from './external';
+import { Skee } from './external';
+export { skee, Skee };
