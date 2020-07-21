@@ -26,13 +26,13 @@ export const schemaToOOP = (schema: bus.Schema): bus.OOPSchema => {
       notNull: true,
     });
 
-    columnFields.push({
-      key: 'updatedAt',
-      type: bus.COLUMN.datetime,
-      isList: false,
-      unique: false,
-      notNull: true,
-    });
+    // columnFields.push({
+    //   key: 'updatedAt',
+    //   type: bus.COLUMN.datetime,
+    //   isList: false,
+    //   unique: false,
+    //   notNull: true,
+    // });
 
     const relationFields: bus.OOPRelation[] = [];
     const startEdges = schema.edges.filter((e) => e.start === t.name);
