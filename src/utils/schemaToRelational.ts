@@ -36,15 +36,15 @@ export const schemaToRelational = (schema: bus.Schema): bus.RelationalSchema => 
     });
 
     // adding createdAt
-    modColumns.push({
-      name: 'createdAt',
-      type: bus.COLUMN.datetime,
-      isList: false,
-      unique: false,
-      notNull: true,
-      default: bus.FUNCTION.now,
-      primary: false,
-    });
+    // modColumns.push({
+    //   name: 'createdAt',
+    //   type: bus.COLUMN.datetime,
+    //   isList: false,
+    //   unique: false,
+    //   notNull: true,
+    //   default: bus.FUNCTION.now,
+    //   primary: false,
+    // });
 
     // adding updatedAt
     // modColumns.push({

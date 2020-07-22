@@ -18,13 +18,13 @@ export const schemaToOOP = (schema: bus.Schema): bus.OOPSchema => {
       notNull: true,
     });
 
-    columnFields.push({
-      key: 'createdAt',
-      type: bus.COLUMN.datetime,
-      isList: false,
-      unique: false,
-      notNull: true,
-    });
+    // columnFields.push({
+    //   key: 'createdAt',
+    //   type: bus.COLUMN.datetime,
+    //   isList: false,
+    //   unique: false,
+    //   notNull: true,
+    // });
 
     // columnFields.push({
     //   key: 'updatedAt',
