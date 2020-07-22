@@ -355,6 +355,9 @@ export class PostgresMigrator extends Migrator {
       // add multi-column uniqueness constraint;
       await this.addUniquenessConstraint(action.name, [action.params.startColumn, action.params.endColumn]);
 
+      await this.addIndex(action.name, action.params.startColumn);
+      await this.addIndex(action.name, action.params.endColumn);
+
       // commit transaction
       //  await this.execute('COMMIT;');
     } catch (err) {
