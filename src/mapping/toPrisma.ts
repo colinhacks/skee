@@ -79,11 +79,16 @@ export const toPrisma = (schema: bus.Schema) => (): { file: string } => {
       // endScalarLine = `${edge.columnName} ${}`
     } else if (edge.kind === 'oneToMany') {
       const reqMod = edge.required ? '' : '?';
+
       startLine = `${edge.startKey} ${edge.end}[] @relation("${edge.name}")`;
       endLine = `${edge.endKey} ${edge.start}${reqMod} @relation("${edge.name}", fields: [${edge.columnName}], references: [${start.idKey}])`;
     } else if (edge.kind === 'manyToMany') {
-      startLine = `${edge.startKey} ${edge.end}[] @relation("${edge.name}", references: [${end.idKey}])`;
-      endLine = `${edge.endKey} ${edge.start}[] @relation("${edge.name}", references: [${start.idKey}])`;
+      if (edge.name.slice(0, 1) !== '_')
+        throw new Error(
+          'First character of join table name must be an underscore. Read their documentation at https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-schema/relations#conventions-for-relation-tables-in-implicit-m-n-relations to learn more.',
+        );
+      startLine = `${edge.startKey} ${edge.end}[] @relation("${edge.name.slice(1)}", references: [${end.idKey}])`;
+      endLine = `${edge.endKey} ${edge.start}[] @relation("${edge.name.slice(1)}", references: [${start.idKey}])`;
     }
     lines[edge.start] = [...lines[edge.start], startLine];
     lines[edge.end] = [...lines[edge.end], endLine];
