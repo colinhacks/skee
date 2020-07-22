@@ -1,8 +1,8 @@
 import { bus } from '../bus';
 
 export * from './columnConversion';
-export * from './schemaToRelational';
-export * from './schemaToOOP';
+export * from '../mapping/toRelational';
+export * from '../mapping/toOOP';
 
 export const assert = {
   tableExists: (schema: bus.Schema, table: string) => {

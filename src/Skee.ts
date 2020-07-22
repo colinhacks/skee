@@ -23,8 +23,8 @@ export class Skee<T extends string, V extends CommitCache> {
   };
 
   to = {
-    relationalSchema: () => bus.utils.schemaToRelational(this._schema),
-    oopSchema: () => bus.utils.schemaToOOP(this._schema),
+    relational: () => bus.utils.toRelational(this._schema),
+    oop: () => bus.mapping.toOOP(this._schema),
     skiiStructs: (): ReturnType<typeof bus.mapping.toSkiiSchema> => bus.mapping.toSkiiSchema(this._schema),
     zod: (): ReturnType<typeof bus.mapping.toZodSchema> => bus.mapping.toZodSchema(this._schema),
     typescript: () => bus.mapping.toTypeScript(this._schema),

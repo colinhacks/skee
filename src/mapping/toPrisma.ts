@@ -24,7 +24,7 @@ export const toPrisma = (schema: bus.Schema) => (): { file: string } => {
   const { edges } = schema;
   const lines: { [k: string]: string[] } = {};
 
-  const tables = bus.utils.schemaToRelational(schema).tables; // schema.to.relationalSchema().tables;
+  const tables = bus.utils.toRelational(schema).tables; // schema.to.relationalSchema().tables;
 
   // generate fields
   for (const table of tables) {

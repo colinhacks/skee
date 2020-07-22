@@ -59,7 +59,7 @@ const modelToSkiiStruct = (model: bus.OOPModel) => {
 // };
 
 export const toSkiiSchema = (schema: bus.Schema) => {
-  const oopSchema = bus.utils.schemaToOOP(schema); // schema.to.oopSchema();
+  const oopSchema = bus.mapping.toOOP(schema); // schema.to.oop();
   const types = bus.mapping.toTypeScript(schema); // schema.to.typescript();
 
   const models: { name: string; type: string; definition: string }[] = [];

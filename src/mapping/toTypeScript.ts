@@ -49,7 +49,7 @@ type ToTypeScript = { file: string; models: ModelToTypeScript[] };
 
 export const toTypeScript = (schema: bus.Schema): ToTypeScript => {
   const tsTypes = [];
-  const models = bus.utils.schemaToOOP(schema).models;
+  const models = bus.utils.toOOP(schema).models;
   for (const model of models) {
     const definition = modelToTypeScript(model);
     const fullDefinition = `type ${model.name} = ${definition}`;

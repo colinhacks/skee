@@ -370,7 +370,7 @@ export class PostgresMigrator extends Migrator {
 
   deleteAllTables = async (schema: bus.Schema) => {
     try {
-      const relationalSchema = bus.utils.schemaToRelational(schema);
+      const relationalSchema = bus.utils.toRelational(schema);
       for (const table of relationalSchema.tables) {
         await this.execute(`DROP TABLE IF EXISTS "${table.name}" CASCADE;`);
       }

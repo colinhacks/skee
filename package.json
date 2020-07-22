@@ -1,6 +1,6 @@
 {
   "name": "skee",
-  "version": "0.5.3",
+  "version": "0.5.2",
   "description": "Fluent schema modeling and migrations, versioning, and codegen",
   "main": "./lib/src/index.js",
   "types": "./lib/src/index.d.ts",
@@ -47,7 +47,6 @@
     "posttest": "npm run check"
   },
   "devDependencies": {
-    "@prisma/cli": "^2.0.0-beta.4",
     "@types/jest": "^25.1.4",
     "@types/pg": "^7.14.3",
     "@typescript-eslint/eslint-plugin": "^2.26.0",

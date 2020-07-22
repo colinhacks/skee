@@ -62,7 +62,7 @@ const modelToZodSchema = (model: bus.OOPModel) => {
 // };
 
 export const toZodSchema = (schema: bus.Schema) => {
-  const oopSchema = bus.utils.schemaToOOP(schema); // schema.to.oopSchema();
+  const oopSchema = bus.mapping.toOOP(schema); // schema.to.oopSchema();
   const types = bus.mapping.toTypeScript(schema); // schema.to.typescript();
 
   const models: { name: string; type: string; definition: string }[] = [];
