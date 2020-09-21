@@ -9,6 +9,12 @@ export type Action =
   | bus.ducks.renameColumn.Action
   | bus.ducks.setDefault.Action
   | bus.ducks.dropDefault.Action
+  | bus.ducks.setNotNull.Action
+  | bus.ducks.dropNotNull.Action
+  | bus.ducks.setUnique.Action
+  | bus.ducks.dropUnique.Action
+  | bus.ducks.createIndex.Action
+  | bus.ducks.dropIndex.Action
   | bus.ducks.oneToOne.Action
   | bus.ducks.oneToMany.Action
   | bus.ducks.manyToMany.Action
@@ -55,18 +61,18 @@ export const dispatch = (state: bus.Schema = defaultState, action: Action) => {
     case bus.ducks.dropDefault.ActionType:
       return bus.ducks.dropDefault.reducer(state, action);
 
-    // case bus.ducks.setNotNull.ActionType:
-    //   return bus.ducks.setNotNull.reducer(state,action);
-    // case bus.ducks.dropNotNull.ActionType:
-    //   return bus.ducks.dropNotNull.reducer(state,action);
-    // case bus.ducks.setUnique.ActionType:
-    //   return bus.ducks.setUnique.reducer(state,action);
-    // case bus.ducks.dropUnique.ActionType:
-    //   return bus.ducks.dropUnique.reducer(state,action);
-    // case bus.ducks.createIndex.ActionType:
-    //   return bus.ducks.createIndex.reducer(state,action);
-    // case bus.ducks.dropIndex.ActionType:
-    //   return bus.ducks.dropIndex.reducer(state,action);
+    case bus.ducks.setNotNull.ActionType:
+      return bus.ducks.setNotNull.reducer(state, action);
+    case bus.ducks.dropNotNull.ActionType:
+      return bus.ducks.dropNotNull.reducer(state, action);
+    case bus.ducks.setUnique.ActionType:
+      return bus.ducks.setUnique.reducer(state, action);
+    case bus.ducks.dropUnique.ActionType:
+      return bus.ducks.dropUnique.reducer(state, action);
+    case bus.ducks.createIndex.ActionType:
+      return bus.ducks.createIndex.reducer(state, action);
+    case bus.ducks.dropIndex.ActionType:
+      return bus.ducks.dropIndex.reducer(state, action);
 
     case bus.ducks.oneToMany.ActionType:
       return bus.ducks.oneToMany.reducer(state, action);

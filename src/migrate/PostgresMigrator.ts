@@ -1,6 +1,6 @@
 import { Client, QueryResult } from 'pg';
 import { bus } from '../bus';
-import { Migrator } from '../internal';
+import { Migrator, utils } from '../internal';
 
 export const PgType = {
   bigint: 'bigint',
@@ -104,8 +104,10 @@ export class PostgresMigrator extends Migrator {
 
   toLiteral = (lit: any): string => {
     const client = new Client();
-    if (Array.isArray(lit)) return `ARRAY[ ${lit.map(this.toLiteral).join(' , ')} ]`;
-    if (typeof lit === 'bigint' || typeof lit === 'number') return lit.toString();
+    if (Array.isArray(lit))
+      return `ARRAY[ ${lit.map(this.toLiteral).join(' , ')} ]`;
+    if (typeof lit === 'bigint' || typeof lit === 'number')
+      return lit.toString();
     if (typeof lit === 'string') return client.escapeLiteral(lit);
     if (lit instanceof Date) return `TIMESTAMP '${lit.toISOString()}'`;
     if (typeof lit === 'object') return JSON.stringify(lit, null, 2);
@@ -144,7 +146,9 @@ export class PostgresMigrator extends Migrator {
   };
 
   renameTable = async (action: bus.ducks.renameTable.Action) => {
-    const QUERY = `ALTER TABLE ${this.toId(action.oldTableName)} RENAME TO ${this.toId(action.newTableName)};`;
+    const QUERY = `ALTER TABLE ${this.toId(
+      action.oldTableName,
+    )} RENAME TO ${this.toId(action.newTableName)};`;
     await this.execute(QUERY);
     return true;
   };
@@ -176,32 +180,38 @@ export class PostgresMigrator extends Migrator {
 
   dropColumn = async (action: bus.ducks.dropColumn.Action) => {
     const { tableName, columnName } = action;
-    const QUERY = `SELECT COUNT(*) FROM ${this.toId(tableName)} WHERE ${this.toId(columnName)} IS NOT NULL;`;
-    const nonNullRow = await this.execute(QUERY);
-    const count = parseInt(nonNullRow.rows[0].count);
+    // const QUERY = `SELECT COUNT(*) FROM ${this.toId(tableName)} WHERE ${this.toId(columnName)} IS NOT NULL;`;
+    // const nonNullRow = await this.execute(QUERY);
+    // const count = parseInt(nonNullRow.rows[0].count);
 
-    if (count === 0) {
-      const QUERY = `ALTER TABLE ${this.toId(tableName)} DROP COLUMN ${this.toId(columnName)};`;
-      await this.execute(QUERY);
-    } else {
-      throw new Error(
-        `Column "${columnName}" contains data. To drop this column, you must remove all data from this column.`,
-      );
-    }
+    // if (count === 0) {
+    const QUERY = `ALTER TABLE ${this.toId(tableName)} DROP COLUMN ${this.toId(
+      columnName,
+    )};`;
+    await this.execute(QUERY);
+    // } else {
+    //   throw new Error(
+    //     `Column "${columnName}" contains data. To drop this column, you must remove all data from this column.`,
+    //   );
+    // }
     return true;
   };
 
   renameColumn = async (action: bus.ducks.renameColumn.Action) => {
-    const QUERY = `ALTER TABLE ${this.toId(action.tableName)} RENAME COLUMN ${this.toId(
-      action.columnName,
-    )} TO ${this.toId(action.newColumnName)};`;
+    const QUERY = `ALTER TABLE ${this.toId(
+      action.tableName,
+    )} RENAME COLUMN ${this.toId(action.columnName)} TO ${this.toId(
+      action.newColumnName,
+    )};`;
     await this.execute(QUERY);
     return true;
   };
 
   setDefault = async (action: bus.ducks.setDefault.Action) => {
     const defaultValue = this.toDefault(action.value);
-    const QUERY = `ALTER TABLE ${this.toId(action.tableName)} ALTER COLUMN ${this.toId(
+    const QUERY = `ALTER TABLE ${this.toId(
+      action.tableName,
+    )} ALTER COLUMN ${this.toId(
       action.columnName,
     )} SET DEFAULT ${defaultValue};`;
     await this.execute(QUERY);
@@ -209,35 +219,111 @@ export class PostgresMigrator extends Migrator {
   };
 
   dropDefault = async (action: bus.ducks.dropDefault.Action) => {
-    const QUERY = `ALTER TABLE ${this.toId(action.tableName)} ALTER COLUMN ${this.toId(
-      action.columnName,
-    )} DROP DEFAULT;`;
+    const QUERY = `ALTER TABLE ${this.toId(
+      action.tableName,
+    )} ALTER COLUMN ${this.toId(action.columnName)} DROP DEFAULT;`;
     await this.execute(QUERY);
+    return true;
+  };
+
+  setNotNull = async (action: bus.ducks.setNotNull.Action) => {
+    const QUERY = `ALTER TABLE ${this.toId(
+      action.tableName,
+    )} ALTER COLUMN ${this.toId(action.columnName)} SET NOT NULL;`;
+    await this.execute(QUERY);
+    return true;
+  };
+
+  dropNotNull = async (action: bus.ducks.dropNotNull.Action) => {
+    const QUERY = `ALTER TABLE ${this.toId(
+      action.tableName,
+    )} ALTER COLUMN ${this.toId(action.columnName)} DROP NOT NULL;`;
+    await this.execute(QUERY);
+    return true;
+  };
+
+  setUnique = async (action: bus.ducks.setUnique.Action) => {
+    await this.addUniquenessConstraint(action.tableName, action.columnNames);
+    //  const QUERY = `ALTER TABLE ${this.toId(
+    //    action.tableName,
+    //  )} ADD CONSTRAINT ${action.columnName}_setUnique UNIQUE (${this.toId(
+    //    action.columnName,
+    //  )});`;
+    //  await this.execute(QUERY);
+    return true;
+  };
+
+  dropUnique = async (action: bus.ducks.dropUnique.Action) => {
+    await this.dropUniquenessConstraint(action.tableName, action.columnNames);
+    return true;
+  };
+
+  createIndex = async (action: bus.ducks.createIndex.Action) => {
+    const idxName = utils.generateName({
+      kind: 'index',
+      table: action.tableName,
+      columns: action.columnNames,
+    }); //`${table}_${columns.sort().join('_')}_unique_cx`;
+    const UNIQUE_QUERY = [
+      `CREATE INDEX`,
+      this.toId(idxName),
+      `ON`,
+      this.toId(action.tableName),
+      `(${action.columnNames.map(this.toId).join(', ')});`,
+    ].join(' ');
+    await this.execute(UNIQUE_QUERY);
+    return true;
+  };
+
+  dropIndex = async (action: bus.ducks.dropIndex.Action) => {
+    const idxName = utils.generateName({
+      kind: 'index',
+      table: action.tableName,
+      columns: action.columnNames,
+    });
+    const UNIQUE_QUERY = [`DROP INDEX`, this.toId(idxName), `;`].join(' ');
+    await this.execute(UNIQUE_QUERY);
     return true;
   };
 
   getCommits = async () => {
     const QUERY = `SELECT * FROM __commit_history__;`;
-    const result = await this.execute<{ name: string; created_at: Date }>(QUERY);
+    const result = await this.execute<{
+      name: string;
+      created_at: Date;
+    }>(QUERY);
     if (!Array.isArray(result.rows)) {
       throw new Error(`Error retrieving previous commits.`);
     }
-    return result.rows.sort((a, b) => a.created_at.valueOf() - b.created_at.valueOf());
+    return result.rows.sort(
+      (a, b) => a.created_at.valueOf() - b.created_at.valueOf(),
+    );
   };
 
   commit = async (action: bus.ducks.commit.Action) => {
-    await this.execute(`INSERT INTO __commit_history__ (name) VALUES ($1);`, [action.name]);
+    await this.execute(`INSERT INTO __commit_history__ (name) VALUES ($1);`, [
+      action.name,
+    ]);
     return true;
   };
 
-  protected addIndex = async (table: string, column: string) => {
-    const indexName = `${table}_${column}_idx`;
-    const IDX_QUERY = `CREATE INDEX ${this.toId(indexName)} ON ${this.toId(table)}(${this.toId(column)});`;
+  protected addIndex = async (table: string, columns: string[]) => {
+    const indexName = `${table}_${columns.sort()}_idx`;
+    const IDX_QUERY = `CREATE INDEX ${this.toId(indexName)} ON ${this.toId(
+      table,
+    )}(${columns.map((col) => this.toId(col)).join(', ')});`;
     await this.execute(IDX_QUERY);
   };
 
-  protected addUniquenessConstraint = async (table: string, columns: string[]) => {
-    const cxName = `${table}_${columns.join('_')}_unique_cx`;
+  protected addUniquenessConstraint = async (
+    table: string,
+    columns: string[],
+  ) => {
+    const cxName = utils.generateName({
+      kind: 'unique',
+      table: table,
+      columns: columns,
+    }); //`${table}_${columns.sort().join('_')}_unique_cx`;
     const UNIQUE_QUERY = [
       `ALTER TABLE`,
       this.toId(table),
@@ -248,8 +334,37 @@ export class PostgresMigrator extends Migrator {
     await this.execute(UNIQUE_QUERY);
   };
 
-  protected addForeignKey = async (referencing: string, fkColumn: string, referenced: string) => {
-    const cxName = `${referencing}_${fkColumn}_references_${referenced}_cx`;
+  protected dropUniquenessConstraint = async (
+    table: string,
+    columns: string[],
+  ) => {
+    const cxName = utils.generateName({
+      kind: 'unique',
+      table: table,
+      columns: columns,
+    });
+    //`${table}_${columns.sort().join('_')}_unique_cx`;
+    //  const cxName = `${table}_${columns.sort().join('_')}_unique_cx`;
+    const UNIQUE_QUERY = [
+      `ALTER TABLE`,
+      this.toId(table),
+      `DROP CONSTRAINT ${this.toId(cxName)};`,
+    ].join(' ');
+    await this.execute(UNIQUE_QUERY);
+  };
+
+  protected addForeignKey = async (
+    referencing: string,
+    fkColumn: string,
+    referenced: string,
+  ) => {
+    // const cxName = `${referencing}_${fkColumn}_references_${referenced}_cx`;
+    const cxName = utils.generateName({
+      kind: 'foreign',
+      referenced,
+      referencing,
+      fkColumn,
+    });
     const FK_QUERY = [
       `ALTER TABLE`,
       this.toId(referencing),
@@ -259,6 +374,32 @@ export class PostgresMigrator extends Migrator {
       `(${this.toId(fkColumn)})`,
       `REFERENCES`,
       this.toId(referenced),
+    ].join(' ');
+    await this.execute(FK_QUERY);
+  };
+
+  protected dropForeignKey = async (
+    referencing: string,
+    fkColumn: string,
+    referenced: string,
+  ) => {
+    // const cxName = `${referencing}_${fkColumn}_references_${referenced}_cx`;
+    const cxName = utils.generateName({
+      kind: 'foreign',
+      referenced,
+      referencing,
+      fkColumn,
+    });
+    await this.dropConstraint(referencing, cxName);
+  };
+
+  protected dropConstraint = async (table: string, cxName: string) => {
+    const FK_QUERY = [
+      `ALTER TABLE`,
+      this.toId(table),
+      `DROP CONSTRAINT`,
+      this.toId(cxName),
+      `;`,
     ].join(' ');
     await this.execute(FK_QUERY);
   };
@@ -314,7 +455,7 @@ export class PostgresMigrator extends Migrator {
 
       // create index for one-to-many
       if (!unique) {
-        await this.addIndex(action.end, action.params.columnName);
+        await this.addIndex(action.end, [action.params.columnName]);
       }
 
       // commit transaction
@@ -331,11 +472,17 @@ export class PostgresMigrator extends Migrator {
     return await this.addForeignKeyRelation(action, schema);
   };
 
-  oneToMany = async (action: bus.ducks.oneToMany.Action, schema: bus.Schema) => {
+  oneToMany = async (
+    action: bus.ducks.oneToMany.Action,
+    schema: bus.Schema,
+  ) => {
     return await this.addForeignKeyRelation(action, schema);
   };
 
-  manyToMany = async (action: bus.ducks.manyToMany.Action, schema: bus.Schema) => {
+  manyToMany = async (
+    action: bus.ducks.manyToMany.Action,
+    schema: bus.Schema,
+  ) => {
     const startIdType = bus.utils.getIdType(schema, action.start);
     const endIdType = bus.utils.getIdType(schema, action.start);
     try {
@@ -344,19 +491,30 @@ export class PostgresMigrator extends Migrator {
 
       // create join table
       const JOIN_TABLE_COLUMNS = [
-        `${this.toId(action.params.startColumn)} ${startIdType} NOT NULL REFERENCES ${this.toId(action.start)}`,
-        `${this.toId(action.params.endColumn)} ${endIdType} NOT NULL REFERENCES ${this.toId(action.end)}`,
+        `${this.toId(
+          action.params.startColumn,
+        )} ${startIdType} NOT NULL REFERENCES ${this.toId(action.start)}`,
+        `${this.toId(
+          action.params.endColumn,
+        )} ${endIdType} NOT NULL REFERENCES ${this.toId(action.end)}`,
       ];
-      const JOIN_QUERY = [`CREATE TABLE`, this.toId(action.name), `( ${JOIN_TABLE_COLUMNS.join(' , ')} );`].join(' ');
+      const JOIN_QUERY = [
+        `CREATE TABLE`,
+        this.toId(action.name),
+        `( ${JOIN_TABLE_COLUMNS.join(' , ')} );`,
+      ].join(' ');
       await this.execute(JOIN_QUERY);
 
       // add index
 
       // add multi-column uniqueness constraint;
-      await this.addUniquenessConstraint(action.name, [action.params.startColumn, action.params.endColumn]);
+      await this.addUniquenessConstraint(action.name, [
+        action.params.startColumn,
+        action.params.endColumn,
+      ]);
 
-      await this.addIndex(action.name, action.params.startColumn);
-      await this.addIndex(action.name, action.params.endColumn);
+      await this.addIndex(action.name, [action.params.startColumn]);
+      await this.addIndex(action.name, [action.params.endColumn]);
 
       // commit transaction
       //  await this.execute('COMMIT;');

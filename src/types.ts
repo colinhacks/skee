@@ -43,8 +43,14 @@ export type Edge = OneToOneEdge | OneToManyEdge | ManyToManyEdge;
 
 type EdgeInputOmitKeys = 'start' | 'end' | 'kind' | 'tableName' | 'name';
 
-export type OneToOneEdgeInput = helperUtil.makeOptional<Omit<OneToOneEdge, EdgeInputOmitKeys>, 'required'>;
-export type OneToManyEdgeInput = helperUtil.makeOptional<Omit<OneToManyEdge, EdgeInputOmitKeys>, 'required'>;
+export type OneToOneEdgeInput = helperUtil.makeOptional<
+  Omit<OneToOneEdge, EdgeInputOmitKeys>,
+  'required'
+>;
+export type OneToManyEdgeInput = helperUtil.makeOptional<
+  Omit<OneToManyEdge, EdgeInputOmitKeys>,
+  'required'
+>;
 export type ManyToManyEdgeInput = Omit<ManyToManyEdge, EdgeInputOmitKeys>;
 
 export type EdgeInput =
@@ -52,20 +58,32 @@ export type EdgeInput =
   | Omit<OneToManyEdge, EdgeInputOmitKeys>
   | Omit<ManyToManyEdge, EdgeInputOmitKeys>;
 
+export type Index = {
+  name: string;
+  columns: string[];
+};
+
+export type Constraint = {
+  name: string;
+  columns: string[];
+  kind: 'unique';
+};
+
 export type Table = {
   name: string;
   idKey: string;
   idType: bus.ID;
   columns: Column[];
-  // constraints: Constraint[];
+  indexes: Index[];
+  constraints: Constraint[];
 };
 
 // export type Action = object;
-export type Constraint = {
-  table: string;
-  columns: string[];
-  kind: 'unique' | 'notnull';
-};
+// export type Constraint = {
+//   table: string;
+//   columns: string[];
+//   kind: 'unique' | 'notnull';
+// };
 
 export type Commits = { name: string }[];
 
@@ -96,7 +114,10 @@ export type Schema = {
 
 // references: [string | number | symbol, string];
 
-export type RelationalColumn = Column & { references?: [string, string]; primary: boolean };
+export type RelationalColumn = Column & {
+  references?: [string, string];
+  primary: boolean;
+};
 export type RelationalTable = Omit<Table, 'columns' | 'idKey' | 'idType'> & {
   columns: RelationalColumn[];
   isJoinTable: boolean;

@@ -19,7 +19,8 @@ export const blogSchema = bus.Skee.create()
     required: true,
   })
   .commit('1.0.2')
-  .addColumn('User', 'firstName', bus.COLUMN.text, { isList: true })
+  .addColumn('User', 'firstName', bus.COLUMN.text, { notNull: true })
+  .addColumn('User', 'otherNames', bus.COLUMN.text, { isList: true, notNull: true })
   .commit('1.0.3')
   .addTable('Tag')
   .manyToMany('Post', 'Tag', 'PostToTags', {
@@ -28,4 +29,7 @@ export const blogSchema = bus.Skee.create()
     startColumn: 'userId',
     endColumn: 'tagId',
   })
-  .commit('1.0.4');
+  .commit('1.0.4')
+  .dropColumn('User', 'otherNames')
+  .addColumn('User', 'otherNames', bus.COLUMN.integer, { isList: true })
+  .commit('1.0.5');

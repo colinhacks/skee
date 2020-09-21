@@ -4,6 +4,34 @@ export * from './columnConversion';
 export * from '../mapping/toRelational';
 export * from '../mapping/toOOP';
 
+type CxData =
+  | {
+      kind: 'unique';
+      table: string;
+      columns: string[];
+    }
+  | {
+      kind: 'foreign';
+      referencing: string;
+      referenced: string;
+      fkColumn: string;
+    }
+  | {
+      kind: 'index';
+      table: string;
+      columns: string[];
+    };
+export const generateName = (cx: CxData): string => {
+  if (cx.kind === 'unique') {
+    return `${cx.table}_${cx.columns.sort().join('_')}_unique_cx`;
+  } else if (cx.kind === 'foreign') {
+    return `${cx.referencing}_${cx.fkColumn}_references_${cx.referenced}_cx`;
+  } else if (cx.kind === 'index') {
+    return `${cx.table}_${cx.columns.sort().join('_')}_idx`;
+  }
+  return '';
+};
+
 export const assert = {
   tableExists: (schema: bus.Schema, table: string) => {
     if (!schema.tables.find((t) => t.name === table)) {
@@ -30,7 +58,9 @@ export const assert = {
   noColumn: (schema: bus.Schema, tableName: string, columnName: string) => {
     const table = getTable(schema, tableName);
     if (table.columns.find((col) => col.name === columnName))
-      throw new Error(`Column "${columnName}" in table "${tableName}" already exists`);
+      throw new Error(
+        `Column "${columnName}" in table "${tableName}" already exists`,
+      );
   },
 };
 
@@ -39,10 +69,16 @@ export const getTable = (schema: bus.Schema, tableName: string): bus.Table => {
   return schema.tables.find((t) => t.name === tableName)!;
 };
 
-export const getColumn = (schema: bus.Schema, tableName: string, columnName: string): bus.Column => {
+export const getColumn = (
+  schema: bus.Schema,
+  tableName: string,
+  columnName: string,
+): bus.Column => {
   assert.tableExists(schema, tableName);
   assert.columnExists(schema, tableName, columnName);
-  return schema.tables.find((t) => t.name === tableName)!.columns.find((c) => c.name === columnName)!;
+  return schema.tables
+    .find((t) => t.name === tableName)!
+    .columns.find((c) => c.name === columnName)!;
 };
 
 export const updateColumn = (
@@ -64,6 +100,108 @@ export const updateColumn = (
           if (c.name !== columnName) return c;
           return { ...c, ...updates };
         }),
+      };
+    }),
+  };
+};
+
+export const addConstraint = (
+  schema: bus.Schema,
+  kind: 'unique',
+  table: string,
+  columns: string[],
+): bus.Schema => {
+  assert.tableExists(schema, table);
+  for (const columnName of columns) {
+    assert.columnExists(schema, table, columnName);
+  }
+
+  const cxName = generateName({ kind, table, columns });
+
+  return {
+    ...schema,
+    tables: schema.tables.map((t) => {
+      if (t.name !== table) return t;
+      return {
+        ...t,
+        constraints: [
+          ...t.constraints,
+          {
+            name: cxName,
+            columns,
+            kind: kind,
+          },
+        ],
+      };
+    }),
+  };
+};
+
+export const dropConstraint = (
+  schema: bus.Schema,
+  table: string,
+  cxName: string,
+): bus.Schema => {
+  assert.tableExists(schema, table);
+
+  return {
+    ...schema,
+    tables: schema.tables.map((t) => {
+      if (t.name !== table) return t;
+      return {
+        ...t,
+        constraints: t.constraints.filter((cx) => cx.name === cxName),
+      };
+    }),
+  };
+};
+
+export const addIndex = (
+  schema: bus.Schema,
+  kind: 'index',
+  table: string,
+  columns: string[],
+): bus.Schema => {
+  assert.tableExists(schema, table);
+  for (const columnName of columns) {
+    assert.columnExists(schema, table, columnName);
+  }
+
+  const idxName = generateName({ kind, table, columns });
+
+  return {
+    ...schema,
+    tables: schema.tables.map((t) => {
+      if (t.name !== table) return t;
+      return {
+        ...t,
+        indexes: [
+          ...t.indexes,
+          {
+            name: idxName,
+            columns,
+            kind: kind,
+          },
+        ],
+      };
+    }),
+  };
+};
+
+export const dropIndex = (
+  schema: bus.Schema,
+  table: string,
+  idxName: string,
+): bus.Schema => {
+  assert.tableExists(schema, table);
+
+  return {
+    ...schema,
+    tables: schema.tables.map((t) => {
+      if (t.name !== table) return t;
+      return {
+        ...t,
+        indexes: t.indexes.filter((idx) => idx.name === idxName),
       };
     }),
   };

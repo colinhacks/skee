@@ -25,8 +25,10 @@ export class Skee<T extends string, V extends CommitCache> {
   to = {
     relational: () => bus.utils.toRelational(this._schema),
     oop: () => bus.mapping.toOOP(this._schema),
-    skiiStructs: (): ReturnType<typeof bus.mapping.toSkiiSchema> => bus.mapping.toSkiiSchema(this._schema),
-    zod: (): ReturnType<typeof bus.mapping.toZodSchema> => bus.mapping.toZodSchema(this._schema),
+    skiiStructs: (): ReturnType<typeof bus.mapping.toSkiiSchema> =>
+      bus.mapping.toSkiiSchema(this._schema),
+    zod: (): ReturnType<typeof bus.mapping.toZodSchema> =>
+      bus.mapping.toZodSchema(this._schema),
     typescript: () => bus.mapping.toTypeScript(this._schema),
     prisma: () => bus.mapping.toPrisma(this._schema)(),
   };
@@ -54,7 +56,10 @@ export class Skee<T extends string, V extends CommitCache> {
     ]);
   };
 
-  renameTable = <Old extends T, New extends string>(tableName: Old, newName: New): Skee<Exclude<T, Old> | New, V> => {
+  renameTable = <Old extends T, New extends string>(
+    tableName: Old,
+    newName: New,
+  ): Skee<Exclude<T, Old> | New, V> => {
     return new Skee([
       ...this._actions,
       {
@@ -108,7 +113,11 @@ export class Skee<T extends string, V extends CommitCache> {
     ]);
   };
 
-  renameColumn = (tableName: T, columnName: string, newColumnName: string): Skee<T, V> => {
+  renameColumn = (
+    tableName: T,
+    columnName: string,
+    newColumnName: string,
+  ): Skee<T, V> => {
     return new Skee([
       ...this._actions,
       {
@@ -154,56 +163,72 @@ export class Skee<T extends string, V extends CommitCache> {
     ]);
   };
 
-  //  setNotNull = (table: T, column: string): Skee<T, V> => {
-  //    return new Skee([
-  //      ...this._actions,
-  //      {
-  //        type: bus.ducks.setNotNull.ActionType,
-  //      },
-  //    ]);
-  //  };
-  //  dropNotNull = (table: T, column: string): Skee<T, V> => {
-  //    return new Skee([
-  //      ...this._actions,
-  //      {
-  //        type: bus.ducks.dropNotNull.ActionType,
-  //      },
-  //    ]);
-  //  };
-  //  setUnique = (table: T, column: string): Skee<T, V> => {
-  //    return new Skee([
-  //      ...this._actions,
-  //      {
-  //        type: bus.ducks.setUnique.ActionType,
-  //      },
-  //    ]);
-  //  };
-  //  dropUnique = (table: T, column: string): Skee<T, V> => {
-  //    return new Skee([
-  //      ...this._actions,
-  //      {
-  //        type: bus.ducks.dropUnique.ActionType,
-  //      },
-  //    ]);
-  //  };
-  //  createIndex = (table: T, column: string): Skee<T, V> => {
-  //    return new Skee([
-  //      ...this._actions,
-  //      {
-  //        type: bus.ducks.createIndex.ActionType,
-  //      },
-  //    ]);
-  //  };
-  //  dropIndex = (table: T, column: string): Skee<T, V> => {
-  //    return new Skee([
-  //      ...this._actions,
-  //      {
-  //        type: bus.ducks.dropIndex.ActionType,
-  //      },
-  //    ]);
-  //  };
+  setNotNull = (tableName: T, columnName: string): Skee<T, V> => {
+    return new Skee([
+      ...this._actions,
+      {
+        type: bus.ducks.setNotNull.ActionType,
+        tableName,
+        columnName,
+      },
+    ]);
+  };
+  dropNotNull = (tableName: T, columnName: string): Skee<T, V> => {
+    return new Skee([
+      ...this._actions,
+      {
+        type: bus.ducks.dropNotNull.ActionType,
+        tableName,
+        columnName,
+      },
+    ]);
+  };
+  setUnique = (tableName: T, columnNames: string[]): Skee<T, V> => {
+    return new Skee([
+      ...this._actions,
+      {
+        type: bus.ducks.setUnique.ActionType,
+        tableName,
+        columnNames,
+      },
+    ]);
+  };
+  dropUnique = (tableName: T, columnNames: string[]): Skee<T, V> => {
+    return new Skee([
+      ...this._actions,
+      {
+        type: bus.ducks.dropUnique.ActionType,
+        tableName,
+        columnNames,
+      },
+    ]);
+  };
+  createIndex = (tableName: T, columnNames: string[]): Skee<T, V> => {
+    return new Skee([
+      ...this._actions,
+      {
+        type: bus.ducks.createIndex.ActionType,
+        tableName,
+        columnNames,
+      },
+    ]);
+  };
+  dropIndex = (tableName: T, columnNames: string[]): Skee<T, V> => {
+    return new Skee([
+      ...this._actions,
+      {
+        type: bus.ducks.dropIndex.ActionType,
+        tableName,
+        columnNames,
+      },
+    ]);
+  };
 
-  oneToOne = <StartTable extends T, EndTable extends T, Params extends bus.OneToOneEdgeInput>(
+  oneToOne = <
+    StartTable extends T,
+    EndTable extends T,
+    Params extends bus.OneToOneEdgeInput
+  >(
     start: StartTable,
     end: EndTable,
     name: string,
@@ -231,7 +256,11 @@ export class Skee<T extends string, V extends CommitCache> {
     ]);
   };
 
-  oneToMany = <StartTable extends T, EndTable extends T, Params extends bus.OneToManyEdgeInput>(
+  oneToMany = <
+    StartTable extends T,
+    EndTable extends T,
+    Params extends bus.OneToManyEdgeInput
+  >(
     start: StartTable,
     end: EndTable,
     name: string,
@@ -284,7 +313,9 @@ export class Skee<T extends string, V extends CommitCache> {
     ]);
   };
 
-  commit = <CommitName extends string>(name: CommitName): Skee<T, V & { [k in CommitName]: this }> => {
+  commit = <CommitName extends string>(
+    name: CommitName,
+  ): Skee<T, V & { [k in CommitName]: this }> => {
     return new Skee([
       ...this._actions,
       {
@@ -295,16 +326,23 @@ export class Skee<T extends string, V extends CommitCache> {
   };
 
   getCommit = <Name extends keyof V>(name: Name): V[Name] => {
-    const commitAction = this._actions.find((a) => a.type === 'ADD_COMMIT' && a.name === name);
+    const commitAction = this._actions.find(
+      (a) => a.type === 'ADD_COMMIT' && a.name === name,
+    );
     if (!commitAction) throw new Error(`Commit "${name}" does not exist.`);
-    const actions = this._actions.slice(0, this._actions.indexOf(commitAction) + 1);
+    const actions = this._actions.slice(
+      0,
+      this._actions.indexOf(commitAction) + 1,
+    );
     return new Skee(actions) as any;
   };
 
   sync = async (db: bus.DBCxn, params: { break?: keyof V } = {}) => {
     if (params.break) {
       if (!this._schema.commits.find((c) => c.name === params.break)) {
-        throw new Error(`You specified a breakpoint of "${params.break}" but that commit doesn't exist.`);
+        throw new Error(
+          `You specified a breakpoint of "${params.break}" but that commit doesn't exist.`,
+        );
       }
     }
 
@@ -312,7 +350,9 @@ export class Skee<T extends string, V extends CommitCache> {
     if (db.db === 'postgres') {
       migrator = new bus.PostgresMigrator(db);
     } else {
-      throw new Error(`Unsupported database: "${db.db}". Only 'postgres' is currently supported.`);
+      throw new Error(
+        `Unsupported database: "${db.db}". Only 'postgres' is currently supported.`,
+      );
     }
 
     await migrator.initialize();
@@ -322,7 +362,7 @@ export class Skee<T extends string, V extends CommitCache> {
     /////////////////////////////
     const schemaCommits = this._schema.commits;
     const appliedCommits = (await migrator.getCommits()).sort(
-      (a, b) => b.created_at.valueOf() - a.created_at.valueOf(),
+      (a, b) => a.created_at.valueOf() - b.created_at.valueOf(),
     );
 
     if (schemaCommits.length === 0) {
@@ -331,12 +371,9 @@ export class Skee<T extends string, V extends CommitCache> {
     }
 
     if (schemaCommits.length < appliedCommits.length) {
+      console.log(`applied: ${appliedCommits.length}`);
+      console.log(`total: ${schemaCommits.length}`);
       throw new Error(`Commit history out of sync.`);
-    }
-
-    if (schemaCommits.length === appliedCommits.length) {
-      console.log(`All commits have been applied...done.`);
-      return;
     }
 
     appliedCommits.map((_, j) => {
@@ -350,6 +387,11 @@ export class Skee<T extends string, V extends CommitCache> {
         );
       }
     });
+
+    if (schemaCommits.length === appliedCommits.length) {
+      console.log(`All commits have been applied...done.`);
+      return;
+    }
 
     ////////////////////////////////
     ///  GROUP ACTIONS BY COMMIT ///
@@ -384,7 +426,11 @@ export class Skee<T extends string, V extends CommitCache> {
 
       console.log();
       console.log(
-        [`===========================`, `    COMMIT ${commitAction.name}   `, `===========================`].join('\n'),
+        [
+          `===========================`,
+          `    COMMIT ${commitAction.name}   `,
+          `===========================`,
+        ].join('\n'),
       );
 
       // apply all actions inside a transaction
@@ -396,6 +442,7 @@ export class Skee<T extends string, V extends CommitCache> {
             case bus.ducks.addTable.ActionType:
               await migrator.addTable(action);
               break;
+
             case bus.ducks.dropTable.ActionType:
               await migrator.dropTable(action);
               break;
@@ -422,6 +469,30 @@ export class Skee<T extends string, V extends CommitCache> {
 
             case bus.ducks.dropDefault.ActionType:
               await migrator.dropDefault(action);
+              break;
+
+            case bus.ducks.setNotNull.ActionType:
+              await migrator.setNotNull(action);
+              break;
+
+            case bus.ducks.dropNotNull.ActionType:
+              await migrator.dropNotNull(action);
+              break;
+
+            case bus.ducks.setUnique.ActionType:
+              await migrator.setUnique(action);
+              break;
+
+            case bus.ducks.dropUnique.ActionType:
+              await migrator.dropUnique(action);
+              break;
+
+            case bus.ducks.createIndex.ActionType:
+              await migrator.createIndex(action);
+              break;
+
+            case bus.ducks.dropIndex.ActionType:
+              await migrator.dropIndex(action);
               break;
 
             case bus.ducks.oneToOne.ActionType:
@@ -466,9 +537,20 @@ export class Skee<T extends string, V extends CommitCache> {
     if (db.db === 'postgres') {
       migrator = new bus.PostgresMigrator(db);
     } else {
-      throw new Error(`Unsupported database: "${db.db}". Only 'postgres' is currently supported.`);
+      throw new Error(
+        `Unsupported database: "${db.db}". Only 'postgres' is currently supported.`,
+      );
     }
     await migrator.deleteAllTables(this._schema);
     return;
   };
+
+  // mock = async (db: bus.DBCxn) => {
+  // const rel = this.to.relational();
+  // const oop = this.to.oop();
+  // oop.models[0].relations[0].
+  // for (const table of rel.tables) {
+  //   for(const )
+  // }
+  // };
 }

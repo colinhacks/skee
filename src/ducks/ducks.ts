@@ -6,12 +6,12 @@ import * as dropColumn from './dropColumn';
 import * as renameColumn from './renameColumn';
 import * as setDefault from './setDefault';
 import * as dropDefault from './dropDefault';
-// import * as setNotNull from './setNotNull';
-// import * as dropNotNull from './dropNotNull';
-// import * as setUnique from './setUnique';
-// import * as dropUnique from './dropUnique';
-// import * as createIndex from './createIndex';
-// import * as dropIndex from './dropIndex';
+import * as setNotNull from './setNotNull';
+import * as dropNotNull from './dropNotNull';
+import * as setUnique from './setUnique';
+import * as dropUnique from './dropUnique';
+import * as createIndex from './createIndex';
+import * as dropIndex from './dropIndex';
 import * as oneToOne from './oneToOne';
 import * as oneToMany from './oneToMany';
 import * as manyToMany from './manyToMany';
@@ -27,6 +27,12 @@ export {
   renameColumn,
   setDefault,
   dropDefault,
+  setNotNull,
+  dropNotNull,
+  setUnique,
+  dropUnique,
+  createIndex,
+  dropIndex,
   oneToOne,
   oneToMany,
   manyToMany,
