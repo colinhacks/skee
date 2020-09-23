@@ -234,6 +234,7 @@ const run = async () => {
   console.log(`S6 SYNC`);
   await s6.sync(testDB);
 
+  console.log(s6.to.zod());
   // TEST DELETE ALL TABLES
   await s6.deleteAllTables(testDB);
 };

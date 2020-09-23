@@ -1,4 +1,5 @@
 import { bus } from './bus';
+import { ToParams } from './mapping/mapping';
 // import { PostgresMigrator } from './migrate/postgres';
 
 type CommitCache = { [k: string]: bus.Skee<any, any> };
@@ -25,11 +26,19 @@ export class Skee<T extends string, V extends CommitCache> {
   to = {
     relational: () => bus.utils.toRelational(this._schema),
     oop: () => bus.mapping.toOOP(this._schema),
-    skiiStructs: (): ReturnType<typeof bus.mapping.toSkiiSchema> =>
-      bus.mapping.toSkiiSchema(this._schema),
-    zod: (): ReturnType<typeof bus.mapping.toZodSchema> =>
-      bus.mapping.toZodSchema(this._schema),
-    typescript: () => bus.mapping.toTypeScript(this._schema),
+    // skiiStructs: (): ReturnType<typeof bus.mapping.toSkiiSchema> =>
+    //   bus.mapping.toSkiiSchema(this._schema),
+    zod: (
+      params: ToParams = {
+        optionals: 'undefined',
+      },
+    ): ReturnType<typeof bus.mapping.toZodSchema> =>
+      bus.mapping.toZodSchema(this._schema, params),
+    typescript: (
+      params: ToParams = {
+        optionals: 'undefined',
+      },
+    ) => bus.mapping.toTypeScript(this._schema, params),
     prisma: () => bus.mapping.toPrisma(this._schema)(),
   };
 
@@ -397,12 +406,18 @@ export class Skee<T extends string, V extends CommitCache> {
     ///  GROUP ACTIONS BY COMMIT ///
     ////////////////////////////////
     let stagedActions: bus.store.Action[] = [];
-    const commitActions: { name: string; actions: bus.store.Action[] }[] = [];
+    const commitActions: {
+      name: string;
+      actions: bus.store.Action[];
+    }[] = [];
 
     for (const action of this._actions) {
       if (action.type === 'ADD_COMMIT') {
         stagedActions.push(action); // include commit as final action
-        commitActions.push({ name: action.name, actions: stagedActions });
+        commitActions.push({
+          name: action.name,
+          actions: stagedActions,
+        });
         stagedActions = [];
         if (params.break === action.name) break;
       } else {

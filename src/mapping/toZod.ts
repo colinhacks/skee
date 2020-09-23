@@ -1,8 +1,12 @@
 import { bus } from '../bus';
+import { ToParams } from './toTypeScript';
 
-const modelToZodSchema = (model: bus.OOPModel) => {
+const modelToZodSchema = (model: bus.OOPModel, params: ToParams) => {
   const zodModel: string[] = [];
   zodModel.push(`z.late.object(()=>({`);
+
+  const optionalMod =
+    params.optionals === 'undefined' ? '.optional()' : `.nullable()`;
 
   for (const field of model.fields) {
     let fieldArg;
@@ -37,7 +41,10 @@ const modelToZodSchema = (model: bus.OOPModel) => {
     }
 
     const fieldWithArray = field.isList ? `z.array(${fieldArg})` : fieldArg;
-    const fieldWithNullMod = field.notNull ? fieldWithArray : `${fieldWithArray}.nullable()`;
+
+    const fieldWithNullMod = field.notNull
+      ? fieldWithArray
+      : `${fieldWithArray}${optionalMod}`;
     const fullField = fieldWithNullMod;
     zodModel.push(`  ${field.key}: ${fullField},`);
   }
@@ -45,7 +52,7 @@ const modelToZodSchema = (model: bus.OOPModel) => {
   for (const relation of model.relations) {
     const base = relation.related;
     const listMod = relation.isList ? `.array()` : '';
-    const nullMod = relation.notNull ? '' : `.nullable()`;
+    const nullMod = relation.notNull ? '' : optionalMod;
     const fullField = `${base}${listMod}${nullMod}`;
     zodModel.push(`    ${relation.key}: ${fullField},`);
   }
@@ -61,14 +68,18 @@ const modelToZodSchema = (model: bus.OOPModel) => {
 //   file: string;
 // };
 
-export const toZodSchema = (schema: bus.Schema) => {
+export const toZodSchema = (schema: bus.Schema, params: ToParams) => {
   const oopSchema = bus.mapping.toOOP(schema); // schema.to.oopSchema();
-  const types = bus.mapping.toTypeScript(schema); // schema.to.typescript();
+  const types = bus.mapping.toTypeScript(schema, params); // schema.to.typescript();
 
-  const models: { name: string; type: string; definition: string }[] = [];
+  const models: {
+    name: string;
+    type: string;
+    definition: string;
+  }[] = [];
 
   for (const model of oopSchema.models) {
-    const zodDef = modelToZodSchema(model);
+    const zodDef = modelToZodSchema(model, params);
     const tsDefs = types.models.find((t) => t.modelName === model.name)!;
     models.push({
       name: model.name,
