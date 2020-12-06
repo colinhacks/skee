@@ -38,7 +38,11 @@ export const toPrisma = (schema: bus.Schema) => (): { file: string } => {
       const arrayMod = col.isList ? '[]' : '';
       const nullMod = col.notNull ? '' : '?';
       const updatedAtMod = col.type === 'updatedAt' ? ' @updatedAt' : '';
-      const idMod = [bus.COLUMN.uuid, bus.COLUMN.serial].includes(col.type as any) ? ' @id' : '';
+      const idMod = [bus.COLUMN.uuid, bus.COLUMN.serial].includes(
+        col.type as any,
+      )
+        ? ' @id'
+        : '';
       const uniqueMod = col.unique && !idMod ? ' @unique' : '';
 
       const defMod =
@@ -73,8 +77,13 @@ export const toPrisma = (schema: bus.Schema) => (): { file: string } => {
     // generate Prisma relations
     if (edge.kind === 'oneToOne') {
       // edge
+      if (edge.required) {
+        throw new Error(
+          'One-to-one relations cannot be required in Prisma: https://github.com/prisma/prisma/releases/tag/2.12.0',
+        );
+      }
       const reqMod = edge.required ? '' : '?';
-      startLine = `${edge.startKey} ${edge.end} @relation("${edge.name}")`;
+      startLine = `${edge.startKey} ${edge.end}? @relation("${edge.name}")`;
       endLine = `${edge.endKey} ${edge.start}${reqMod} @relation("${edge.name}", fields: [${edge.columnName}], references: [${start.idKey}])`;
       // endScalarLine = `${edge.columnName} ${}`
     } else if (edge.kind === 'oneToMany') {
@@ -87,8 +96,12 @@ export const toPrisma = (schema: bus.Schema) => (): { file: string } => {
         throw new Error(
           'First character of join table name must be an underscore. Read their documentation at https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-schema/relations#conventions-for-relation-tables-in-implicit-m-n-relations to learn more.',
         );
-      startLine = `${edge.startKey} ${edge.end}[] @relation("${edge.name.slice(1)}", references: [${end.idKey}])`;
-      endLine = `${edge.endKey} ${edge.start}[] @relation("${edge.name.slice(1)}", references: [${start.idKey}])`;
+      startLine = `${edge.startKey} ${edge.end}[] @relation("${edge.name.slice(
+        1,
+      )}", references: [${end.idKey}])`;
+      endLine = `${edge.endKey} ${edge.start}[] @relation("${edge.name.slice(
+        1,
+      )}", references: [${start.idKey}])`;
     }
     lines[edge.start] = [...lines[edge.start], startLine];
     lines[edge.end] = [...lines[edge.end], endLine];
@@ -97,7 +110,9 @@ export const toPrisma = (schema: bus.Schema) => (): { file: string } => {
 
   const prisma = Object.keys(lines)
     .map((modelName) => {
-      return `model ${modelName} {\n${lines[modelName].map((line) => `  ${line}`).join('\n')}\n}`;
+      return `model ${modelName} {\n${lines[modelName]
+        .map((line) => `  ${line}`)
+        .join('\n')}\n}`;
     })
     .join('\n\n');
 
