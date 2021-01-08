@@ -1,0 +1,38 @@
+{
+  "name": "skee",
+  "description": "Fluent schema modeling and migrations, versioning, and codegen",
+  "version": "0.8.0",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test",
+    "lint": "tsdx lint",
+    "prepublish": "tsdx build"
+  },
+  "peerDependencies": {},
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "all"
+  },
+  "module": "dist/skee.esm.js",
+  "devDependencies": {
+    "@types/pg": "^7.14.7",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.1.0",
+    "typescript": "^4.1.3"
+  },
+  "dependencies": {
+    "pg": "^8.5.1"
+  }
+}
