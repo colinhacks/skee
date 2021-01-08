@@ -33,7 +33,7 @@ export const toPrisma = (schema: bus.Schema) => (): { file: string } => {
 
     lines[table.name] = [];
 
-    const fieldLines = table.columns.map((col) => {
+    const fieldLines = table.columns.map(col => {
       const baseType = typeToPrisma[col.type];
       const arrayMod = col.isList ? '[]' : '';
       const nullMod = col.notNull ? '' : '?';
@@ -109,9 +109,9 @@ export const toPrisma = (schema: bus.Schema) => (): { file: string } => {
   }
 
   const prisma = Object.keys(lines)
-    .map((modelName) => {
+    .map(modelName => {
       return `model ${modelName} {\n${lines[modelName]
-        .map((line) => `  ${line}`)
+        .map(line => `  ${line}`)
         .join('\n')}\n}`;
     })
     .join('\n\n');

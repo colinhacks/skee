@@ -34,30 +34,30 @@ export const generateName = (cx: CxData): string => {
 
 export const assert = {
   tableExists: (schema: bus.Schema, table: string) => {
-    if (!schema.tables.find((t) => t.name === table)) {
+    if (!schema.tables.find(t => t.name === table)) {
       throw new Error(`Table "${table}" does not exist.`);
     }
   },
   columnExists: (schema: bus.Schema, table: string, column: string) => {
-    const t = schema.tables.find((t) => t.name === table);
+    const t = schema.tables.find(t => t.name === table);
     if (!t) throw new Error(`Table "${table}" does not exist.`);
 
-    const c = t.columns.find((col) => col.name === column);
+    const c = t.columns.find(col => col.name === column);
     if (!c) throw new Error(`Column "${table}.${column}" does not exist.`);
   },
   noTableWithName: (schema: bus.Schema, table: string) => {
-    if (schema.tables.find((t) => t.name === table)) {
+    if (schema.tables.find(t => t.name === table)) {
       throw new Error(`Table "${table}" already exists.`);
     }
   },
   noEdge: (schema: bus.Schema, edge: string) => {
-    if (schema.edges.find((e) => e.name === edge)) {
+    if (schema.edges.find(e => e.name === edge)) {
       throw new Error(`Edge "${edge}" already exists.`);
     }
   },
   noColumn: (schema: bus.Schema, tableName: string, columnName: string) => {
     const table = getTable(schema, tableName);
-    if (table.columns.find((col) => col.name === columnName))
+    if (table.columns.find(col => col.name === columnName))
       throw new Error(
         `Column "${columnName}" in table "${tableName}" already exists`,
       );
@@ -66,7 +66,7 @@ export const assert = {
 
 export const getTable = (schema: bus.Schema, tableName: string): bus.Table => {
   assert.tableExists(schema, tableName);
-  return schema.tables.find((t) => t.name === tableName)!;
+  return schema.tables.find(t => t.name === tableName)!;
 };
 
 export const getColumn = (
@@ -77,8 +77,8 @@ export const getColumn = (
   assert.tableExists(schema, tableName);
   assert.columnExists(schema, tableName, columnName);
   return schema.tables
-    .find((t) => t.name === tableName)!
-    .columns.find((c) => c.name === columnName)!;
+    .find(t => t.name === tableName)!
+    .columns.find(c => c.name === columnName)!;
 };
 
 export const updateColumn = (
@@ -92,11 +92,11 @@ export const updateColumn = (
 
   return {
     ...schema,
-    tables: schema.tables.map((t) => {
+    tables: schema.tables.map(t => {
       if (t.name !== tableName) return t;
       return {
         ...t,
-        columns: t.columns.map((c) => {
+        columns: t.columns.map(c => {
           if (c.name !== columnName) return c;
           return { ...c, ...updates };
         }),
@@ -120,7 +120,7 @@ export const addConstraint = (
 
   return {
     ...schema,
-    tables: schema.tables.map((t) => {
+    tables: schema.tables.map(t => {
       if (t.name !== table) return t;
       return {
         ...t,
@@ -146,11 +146,11 @@ export const dropConstraint = (
 
   return {
     ...schema,
-    tables: schema.tables.map((t) => {
+    tables: schema.tables.map(t => {
       if (t.name !== table) return t;
       return {
         ...t,
-        constraints: t.constraints.filter((cx) => cx.name === cxName),
+        constraints: t.constraints.filter(cx => cx.name === cxName),
       };
     }),
   };
@@ -171,7 +171,7 @@ export const addIndex = (
 
   return {
     ...schema,
-    tables: schema.tables.map((t) => {
+    tables: schema.tables.map(t => {
       if (t.name !== table) return t;
       return {
         ...t,
@@ -197,18 +197,18 @@ export const dropIndex = (
 
   return {
     ...schema,
-    tables: schema.tables.map((t) => {
+    tables: schema.tables.map(t => {
       if (t.name !== table) return t;
       return {
         ...t,
-        indexes: t.indexes.filter((idx) => idx.name === idxName),
+        indexes: t.indexes.filter(idx => idx.name === idxName),
       };
     }),
   };
 };
 
 export const getEdge = (schema: bus.Schema, edgeName: string): bus.Edge => {
-  const edge = schema.edges.find((e) => e.name === edgeName) || null;
+  const edge = schema.edges.find(e => e.name === edgeName) || null;
   if (!edge) throw new Error(`Table "${edgeName}" doesn't exist.`);
   return edge;
 };
@@ -218,7 +218,7 @@ export const getIdType = (schema: bus.Schema, table: string) => {
     uuid: 'UUID',
     serial: 'INTEGER',
   };
-  const t = schema.tables.find((x) => x.name === table);
+  const t = schema.tables.find(x => x.name === table);
   if (!t) throw new Error(`No table "${table}" found.`);
   const keyType = keyTypeMap[t.idType];
   if (!keyType) throw new Error(`Unknown ID column type "${t.idType}"`);

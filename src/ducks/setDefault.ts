@@ -11,5 +11,7 @@ export type Action = {
 };
 
 export const reducer = (schema: bus.Schema, action: Action): bus.Schema => {
-  return bus.utils.updateColumn(schema, action.tableName, action.columnName, { default: action.value });
+  return bus.utils.updateColumn(schema, action.tableName, action.columnName, {
+    default: action.value,
+  });
 };

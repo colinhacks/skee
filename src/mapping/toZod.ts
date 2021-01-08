@@ -37,7 +37,7 @@ const modelToZodSchema = (model: bus.OOPModel, params: ToParams) => {
       fieldArg = `z.string()`;
     } else {
       const x: never = field.type;
-      x;
+      x; // eslint-disable-line @typescript-eslint/no-unused-expressions
     }
 
     const fieldWithArray = field.isList ? `z.array(${fieldArg})` : fieldArg;
@@ -80,7 +80,7 @@ export const toZodSchema = (schema: bus.Schema, params: ToParams) => {
 
   for (const model of oopSchema.models) {
     const zodDef = modelToZodSchema(model, params);
-    const tsDefs = types.models.find((t) => t.modelName === model.name)!;
+    const tsDefs = types.models.find(t => t.modelName === model.name)!;
     models.push({
       name: model.name,
       type: `type ${model.name} = ${tsDefs.definition};`,
@@ -94,9 +94,9 @@ import { toZod } from "tozod";
   
 ${types.file}
 
-${models.map((def) => def.definition).join('\n\n')}
+${models.map(def => def.definition).join('\n\n')}
 
-export const models = { ${models.map((m) => m.name).join(', ')} };
+export const models = { ${models.map(m => m.name).join(', ')} };
   `;
   return { types, models, file };
 };

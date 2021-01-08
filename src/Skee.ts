@@ -336,7 +336,7 @@ export class Skee<T extends string, V extends CommitCache> {
 
   getCommit = <Name extends keyof V>(name: Name): V[Name] => {
     const commitAction = this._actions.find(
-      (a) => a.type === 'ADD_COMMIT' && a.name === name,
+      a => a.type === 'ADD_COMMIT' && a.name === name,
     );
     if (!commitAction) throw new Error(`Commit "${name}" does not exist.`);
     const actions = this._actions.slice(
@@ -348,7 +348,7 @@ export class Skee<T extends string, V extends CommitCache> {
 
   sync = async (db: bus.DBCxn, params: { break?: keyof V } = {}) => {
     if (params.break) {
-      if (!this._schema.commits.find((c) => c.name === params.break)) {
+      if (!this._schema.commits.find(c => c.name === params.break)) {
         throw new Error(
           `You specified a breakpoint of "${params.break}" but that commit doesn't exist.`,
         );
@@ -430,7 +430,7 @@ export class Skee<T extends string, V extends CommitCache> {
     //////////////////////////
     ///  LOOP OVER COMMITS ///
     //////////////////////////
-    const appliedCommitNames = appliedCommits.map((c) => c.name);
+    const appliedCommitNames = appliedCommits.map(c => c.name);
     // console.log(`\nApplied commits`);
     // console.log(JSON.stringify(appliedCommitNames, null, 2));
     for (const commitAction of commitActions) {

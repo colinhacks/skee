@@ -4,7 +4,13 @@ export const ActionType = 'ADD_ONE_TO_ONE_EDGE';
 
 type ActionType = typeof ActionType;
 
-export type Action = { type: ActionType; start: string; end: string; name: string; params: bus.OneToOneEdgeInput };
+export type Action = {
+  type: ActionType;
+  start: string;
+  end: string;
+  name: string;
+  params: bus.OneToOneEdgeInput;
+};
 
 export const reducer = (schema: bus.Schema, action: Action): bus.Schema => {
   const { start, end, name, params } = action;

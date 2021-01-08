@@ -172,7 +172,7 @@ export class PostgresMigrator extends Migrator {
       def !== undefined ? `DEFAULT ${this.toDefault(def)}` : '',
       `;`,
     ]
-      .filter((x) => x)
+      .filter(x => x)
       .join(' ');
     await this.execute(QUERY);
     return true;
@@ -311,7 +311,7 @@ export class PostgresMigrator extends Migrator {
     const indexName = `${table}_${columns.sort()}_idx`;
     const IDX_QUERY = `CREATE INDEX ${this.toId(indexName)} ON ${this.toId(
       table,
-    )}(${columns.map((col) => this.toId(col)).join(', ')});`;
+    )}(${columns.map(col => this.toId(col)).join(', ')});`;
     await this.execute(IDX_QUERY);
   };
 

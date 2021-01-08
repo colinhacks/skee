@@ -82,7 +82,7 @@ class SkeeTypescript {
       tsTypes.push({ modelName: model.name, definition, fullDefinition });
     }
     return {
-      file: tsTypes.map((m) => m.fullDefinition).join(`\n\n`),
+      file: tsTypes.map(m => m.fullDefinition).join(`\n\n`),
       models: tsTypes,
     };
   };

@@ -20,6 +20,6 @@ export const reducer = (schema: bus.Schema, action: Action): bus.Schema => {
 
   return {
     ...schema,
-    tables: schema.tables.filter((t) => t.name !== action.name),
+    tables: schema.tables.filter(t => t.name !== action.name),
   };
 };

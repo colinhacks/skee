@@ -20,7 +20,10 @@ export const blogSchema = bus.Skee.create()
   })
   .commit('1.0.2')
   .addColumn('User', 'firstName', bus.COLUMN.text, { notNull: true })
-  .addColumn('User', 'otherNames', bus.COLUMN.text, { isList: true, notNull: true })
+  .addColumn('User', 'otherNames', bus.COLUMN.text, {
+    isList: true,
+    notNull: true,
+  })
   .commit('1.0.3')
   .addTable('Tag')
   .manyToMany('Post', 'Tag', 'PostToTags', {

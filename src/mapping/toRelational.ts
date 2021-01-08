@@ -9,7 +9,7 @@ export const toRelational = (schema: bus.Schema): bus.RelationalSchema => {
   const joinTables: string[] = [];
 
   // adding join tables
-  for (const edge of schema.edges.filter((e) => e.kind === 'manyToMany')) {
+  for (const edge of schema.edges.filter(e => e.kind === 'manyToMany')) {
     joinTables.push(edge.name);
     modTables.push({
       name: edge.name,
@@ -24,7 +24,7 @@ export const toRelational = (schema: bus.Schema): bus.RelationalSchema => {
 
   // copying over existing tables
   for (const table of modTables) {
-    const modColumns: bus.RelationalColumn[] = table.columns.map((col) => ({
+    const modColumns: bus.RelationalColumn[] = table.columns.map(col => ({
       ...col,
       primary: false,
     }));

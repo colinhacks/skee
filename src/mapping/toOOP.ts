@@ -1,8 +1,8 @@
 import { bus } from '../bus';
 
 export const toOOP = (schema: bus.Schema): bus.OOPSchema => {
-  const objects = schema.tables.map((t) => {
-    const columnFields = t.columns.map((col) => ({
+  const objects = schema.tables.map(t => {
+    const columnFields = t.columns.map(col => ({
       type: col.type,
       isList: col.isList,
       key: col.name,
@@ -35,8 +35,8 @@ export const toOOP = (schema: bus.Schema): bus.OOPSchema => {
     // });
 
     const relationFields: bus.OOPRelation[] = [];
-    const startEdges = schema.edges.filter((e) => e.start === t.name);
-    const endEdges = schema.edges.filter((e) => e.end === t.name);
+    const startEdges = schema.edges.filter(e => e.start === t.name);
+    const endEdges = schema.edges.filter(e => e.end === t.name);
 
     for (const se of startEdges) {
       const isList = se.kind.includes('ToMany');
@@ -69,10 +69,10 @@ export const toOOP = (schema: bus.Schema): bus.OOPSchema => {
   });
   return {
     models: objects.filter(
-      (o) =>
+      o =>
         !schema.edges
-          .filter((e) => e.kind === 'manyToMany')
-          .map((e) => e.name)
+          .filter(e => e.kind === 'manyToMany')
+          .map(e => e.name)
           .includes(o.name),
     ),
   };

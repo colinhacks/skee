@@ -3,7 +3,13 @@ import { bus } from '../bus';
 export const ActionType = 'ADD_ONE_TO_MANY_EDGE';
 type ActionType = typeof ActionType;
 
-export type Action = { type: ActionType; start: string; end: string; name: string; params: bus.OneToManyEdgeInput };
+export type Action = {
+  type: ActionType;
+  start: string;
+  end: string;
+  name: string;
+  params: bus.OneToManyEdgeInput;
+};
 
 export const reducer = (schema: bus.Schema, action: Action): bus.Schema => {
   const { start, end, name, params } = action;

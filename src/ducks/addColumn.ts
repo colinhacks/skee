@@ -25,7 +25,14 @@ export const reducer = (schema: bus.Schema, action: Action): bus.Schema => {
   const modTables = [...schema.tables];
   modTables[modTables.indexOf(table)] = {
     ...table,
-    columns: [...table.columns, bus.utils.setColumnDefaults({ ...data, name: columnName, type: dataType })],
+    columns: [
+      ...table.columns,
+      bus.utils.setColumnDefaults({
+        ...data,
+        name: columnName,
+        type: dataType,
+      }),
+    ],
   };
   return {
     ...schema,

@@ -19,7 +19,7 @@ export const reducer = (schema: bus.Schema, action: Action): bus.Schema => {
   const modTables = [...schema.tables];
   modTables[modTables.indexOf(table)] = {
     ...table,
-    columns: table.columns.filter((c) => c.name !== columnName),
+    columns: table.columns.filter(c => c.name !== columnName),
   };
   return {
     ...schema,
