@@ -325,11 +325,6 @@
     "@types/yargs" "^15.0.0"
     chalk "^3.0.0"
 
-"@prisma/cli@^2.0.0-beta.4":
-  version "2.0.0-beta.4"
-  resolved "https://registry.yarnpkg.com/@prisma/cli/-/cli-2.0.0-beta.4.tgz#4989dab626ba5de0591af1a14f423db4838a5e8c"
-  integrity sha512-z9si4cmn/dN7bxVx3hbdDFL6fQuosTzj45EhVrCYt6VCWcJ5jYn0Fzamr+npZvbR/Gl6eLhexXP1sa7iGe8gjA==
-
 "@prisma/client@^2.0.0-beta.4":
   version "2.0.0-beta.4"
   resolved "https://registry.yarnpkg.com/@prisma/client/-/client-2.0.0-beta.4.tgz#fd94c3780108d9886c31526e85eba42369050f0c"
@@ -4021,9 +4016,9 @@ timed-out@^4.0.0:
   integrity sha1-8y6srFoXW+ol1/q1Zas+2HQe9W8=
 
 tmpl@1.0.x:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/tmpl/-/tmpl-1.0.4.tgz#23640dd7b42d00433911140820e5cf440e521dd1"
-  integrity sha1-I2QN17QtAEM5ERQIIOXPRA5SHdE=
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/tmpl/-/tmpl-1.0.5.tgz#8683e0b902bb9c20c4f726e3c0b69f36518c07cc"
+  integrity sha512-3f0uOEAQwIqGuWW2MVzYg8fV/QNnc/IpuJNG837rLuczAaLVHslWHZQj4IGiEl5Hs3kkbhwL9Ab7Hrsmuj+Smw==
 
 to-fast-properties@^2.0.0:
   version "2.0.0"
